@@ -1,6 +1,9 @@
 package lcduke;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.text.ParseException;
 
 /** Ths creates a Duke object.
@@ -14,15 +17,21 @@ public class Duke {
      *
      * @param filePath File path of user's hard disk.
      */
-    protected Duke(String filePath) {
+    protected Duke(String filePath) throws IOException {
         ui = new Ui();
         storage = new Storage(filePath);
+
         try {
             tasks = new TaskList(storage.load(), storage.getStorageNo());
 
         //if there is a problem with reading file, it will create a new TaskList
         } catch (FileNotFoundException | ParseException e) {
             tasks = new TaskList();
+            File file = new File(Paths.get("data").toString());
+            //Creating the directory
+            boolean bool = file.mkdir();
+
+            storage.save();
         }
     }
 
